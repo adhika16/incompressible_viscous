@@ -8,6 +8,7 @@
 DEST			= .
 
 HDRS			= global.hpp \
+						src/initialization.hpp \
 
 LIBS			=
 
@@ -28,6 +29,7 @@ PROGRAM			= main
 
 SRCS			= main.cpp \
 						global.cpp \
+						src/initialization.cpp \
 
 OBJS			= $(SRCS:.cpp=.o)
 
