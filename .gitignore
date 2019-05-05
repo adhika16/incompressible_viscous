@@ -1,0 +1,7 @@
+*.o
+*.dat
+*.csv
+*.png
+*.jpg
+/output
+/main
