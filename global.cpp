@@ -2,7 +2,7 @@
 
 namespace Pars
 {
-	extern const miu = 1.0e-5;
-	extern const rho = 1.226;
-	extern const p_atm = 1.0e5;
+	extern const double miu = 1.0e-5;
+	extern const double rho = 1.226;
+	extern const double p_atm = 1.0e5;
 }

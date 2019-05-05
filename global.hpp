@@ -12,9 +12,9 @@ using namespace std;
 
 namespace Pars
 {
-	extern const miu;
-	extern const rho;
-	extern const p_atm;
+	extern const double miu;
+	extern const double rho;
+	extern const double p_atm;
 }
 
 #endif
