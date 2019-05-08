@@ -30,6 +30,10 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
    y_ij_u.resize(_nx-1, std::vector<double>(_ny));
    x_ij_v.resize(_nx, std::vector<double>(_ny-1));
    y_ij_v.resize(_nx, std::vector<double>(_ny-1));
+   
+   P.resize(_nx, std::vector<double>(_ny));
+   u.resize(_nx-1, std::vector<double>(_ny));
+   v.resize(_nx, std::vector<double>(_ny-1));
 
    // == saving data ==
    std::ofstream outx;
