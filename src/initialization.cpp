@@ -21,7 +21,8 @@ Initialization::~Initialization()
 // =====================================================
 void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vector<std::vector<double>> y_IJ,
  std::vector<std::vector<double>> x_ij_u, std::vector<std::vector<double>> y_ij_u,
- std::vector<std::vector<double>> x_ij_v, std::vector<std::vector<double>> y_ij_v)
+ std::vector<std::vector<double>> x_ij_v, std::vector<std::vector<double>> y_ij_v,
+  std::vector<std::vector<double>> P,std::vector<std::vector<double>>u, std::vector<std::vector<double>>v)
  {
    x_IJ.resize(_nx, std::vector<double>(_ny));
    y_IJ.resize(_nx, std::vector<double>(_ny));
@@ -93,5 +94,36 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
  	// for (int i = 0; i < x.size(); i++)
  	// 	outs << x[i] << " " << y[i] << "\n";
  	// outs.close();
+    // Initial Pressure and Velocity Value
+    // Pressure
+    for(size_t i=0;i<_nx;i++){
+      for(size_t j=0;j<_ny;j++){
+        if((x_IJ[i][j]==0.0)&&(y_IJ[i][j]>=(_lx-Pars::l_i))){
+          P[i][j] = Pars::p_i;
+        }else if((x_IJ[i][j]==_lx)&&(y_IJ[i][j]<=Pars::l_o)){
+          P[i][j] = Pars::p_o;
+        }
+        else{
+          P[i][j] = 0.0;
+        }
+      }
+    }
+    // Velocity (u)
+    for(size_t i=0;i<_nx-1;i++){
+      for(size_t j=0;j<_ny;j++){
+        u[i][j] = 0.0;
+      }
+    }
+    // Velocity (v)
+    for(size_t i=0;i<_nx;i++){
+      for(size_t j=0;j<_ny-1;j++){
+        if((x_ij_v[i][j]==0.0)&&(y_ij_v[i][j]>=(_lx-Pars::l_i))){
+          v[i][j] = Pars::v_i;
+        }
+        else{
+          v[i][j] = 0.0;
+        }
+      }
+    }
 
  }

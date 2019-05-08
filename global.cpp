@@ -11,4 +11,14 @@ namespace Pars
 	extern const int ny = 50;
 	extern const double dx = lx/(double)nx;
 	extern const double dy = ly/(double)ny;
+
+	// Inlet and Outlet Properties
+	extern const double p_i = 0.0; //Inlet Pressure
+	extern const double p_o = 0.0; //Outlet Pressure
+	extern const double v_i = 2.0; //Inlet Velocity
+
+	// Inlet and Outlet Geometry
+	extern const double l_i = 0.25; //Inlet length
+	extern const double l_o = 0.25; //Outlet length
+	
 }
