@@ -22,4 +22,6 @@ namespace Pars
 	extern const double l_i = 0.25; //Inlet length
 	extern const double l_o = 0.25; //Outlet length
 
+	// Time Step
+	extern const double dt = 0.01;
 }
