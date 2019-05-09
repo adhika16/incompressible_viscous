@@ -121,7 +121,7 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
     // Pressure
     for(size_t i=0;i<_nx;i++){
       for(size_t j=0;j<_ny;j++){
-        if((x_IJ[i][j]==0.0e0)&&(y_IJ[i][j]>=(_lx-Pars::l_i))){
+        if((i==0)&&(idx_in[j]==1)){
           P[i][j] = Pars::p_i;
         }else if((x_IJ[i][j]==_lx)&&(y_IJ[i][j]<=Pars::l_o)){
           P[i][j] = Pars::p_o;
@@ -140,7 +140,7 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
     // Velocity (v)
     for(size_t i=0;i<_nx;i++){
       for(size_t j=0;j<_ny-1;j++){
-        if((x_ij_v[i][j]==0.0)&&(y_ij_v[i][j]>=(_lx-Pars::l_i))){
+        if((i==0)&&(y_ij_v[0][j]>=(_lx-Pars::l_i-0.25))&&(y_ij_v[0][j]<=(_lx-0.25))){
           v[i][j] = Pars::v_i;
         }
         else{
