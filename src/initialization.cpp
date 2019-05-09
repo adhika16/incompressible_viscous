@@ -22,7 +22,8 @@ Initialization::~Initialization()
 void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vector<std::vector<double>> y_IJ,
  std::vector<std::vector<double>> x_ij_u, std::vector<std::vector<double>> y_ij_u,
  std::vector<std::vector<double>> x_ij_v, std::vector<std::vector<double>> y_ij_v,
-  std::vector<std::vector<double>> P,std::vector<std::vector<double>>u, std::vector<std::vector<double>>v)
+ std::vector<int> &idx_in,std::vector<int> &idx_out,
+ std::vector<std::vector<double>> &P,std::vector<std::vector<double>>&u, std::vector<std::vector<double>>&v)
  {
    x_IJ.resize(_nx, std::vector<double>(_ny));
    y_IJ.resize(_nx, std::vector<double>(_ny));
@@ -30,7 +31,10 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
    y_ij_u.resize(_nx-1, std::vector<double>(_ny));
    x_ij_v.resize(_nx, std::vector<double>(_ny-1));
    y_ij_v.resize(_nx, std::vector<double>(_ny-1));
-   
+
+   idx_in.resize(_ny);
+   idx_out.resize(_ny);
+
    P.resize(_nx, std::vector<double>(_ny));
    u.resize(_nx-1, std::vector<double>(_ny));
    v.resize(_nx, std::vector<double>(_ny-1));
@@ -98,11 +102,26 @@ void Initialization::init_domain(std::vector<std::vector<double>> x_IJ, std::vec
  	// for (int i = 0; i < x.size(); i++)
  	// 	outs << x[i] << " " << y[i] << "\n";
  	// outs.close();
-    // Initial Pressure and Velocity Value
+
+  // Inlet and Outlet 
+  for(size_t i=0;i<_ny;i++){
+    if((y_IJ[0][i]>=(_lx-Pars::l_i-0.25))&&(y_IJ[0][i]<=(_lx-0.25))){
+      idx_in[i] = 1;
+    }else{
+      idx_in[i] = 0;
+    }
+    if(y_IJ[_ny-1][i]<=Pars::l_o){
+      idx_out[i] = 1;
+    }else{
+      idx_out[i] = 0;
+    }
+  }
+
+  // Initial Pressure and Velocity Value
     // Pressure
     for(size_t i=0;i<_nx;i++){
       for(size_t j=0;j<_ny;j++){
-        if((x_IJ[i][j]==0.0)&&(y_IJ[i][j]>=(_lx-Pars::l_i))){
+        if((x_IJ[i][j]==0.0e0)&&(y_IJ[i][j]>=(_lx-Pars::l_i))){
           P[i][j] = Pars::p_i;
         }else if((x_IJ[i][j]==_lx)&&(y_IJ[i][j]<=Pars::l_o)){
           P[i][j] = Pars::p_o;

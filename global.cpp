@@ -15,10 +15,11 @@ namespace Pars
 	// Inlet and Outlet Properties
 	extern const double p_i = 0.0; //Inlet Pressure
 	extern const double p_o = 0.0; //Outlet Pressure
-	extern const double v_i = 2.0; //Inlet Velocity
-
+	extern const double v_i = 0.0; //Inlet Velocity (v)
+	extern const double u_i = 2.0; //Inlet Velocity (u)
+	
 	// Inlet and Outlet Geometry
 	extern const double l_i = 0.25; //Inlet length
 	extern const double l_o = 0.25; //Outlet length
-	
+
 }
