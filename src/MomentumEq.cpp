@@ -3,17 +3,31 @@
 // =====================================================
 // =====================================================
 
+SIMPLE::SIMPLE()
+{
+	this->_nx = Pars::nx;
+	this->_ny = Pars::ny;
+	this->_dx = Pars::dx;
+	this->_dy = Pars::dy;
+	this->_dt = Pars::dt;
+	// == initialization of internal variables for pressure correction purpose
+	// this->_p_n.resize(Pars::nx, std::vector<double>(Pars::ny, 0.0e0));
+	// this->_p_n_1.resize(Pars::nx, std::vector<double>(Pars::ny, 0.0e0));
+}
+
+// =====================================================
+// =====================================================
+
 void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vector<std::vector<double>> u,
     const std::vector<std::vector<double>> v, std::vector<double> ul, std::vector<double> ur,
     std::vector<double> vt, std::vector<double> vb,const std::vector<int> idx_in,
-    const std::vector<int> idx_out,std::vector<std::vector<double>> &u_star,
-    std::vector<std::vector<double>> &v_star)
+    const std::vector<int> idx_out)
  {
     double dt = Pars::dt;
 
     // Ghost Points
-	  ul.resize(Pars::ny);ur.resize(Pars::ny);
-	  vt.resize(Pars::nx);vb.resize(Pars::nx);
+	  ul.resize(Pars::ny);ur.resize(Pars::ny); // to assist x-momentum solving 
+	  vt.resize(Pars::nx);vb.resize(Pars::nx); // to assist y-momentum solving 
  
     // Left and Right Boundary
     for(size_t j=0;j<Pars::ny;j++){
@@ -23,7 +37,7 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
         ul[j]=0.0e0;
       }
       if(idx_out[j]==1){ 
-        // ur[j]=u[Pars::nx-2][j]; //? Velocity at Outlet
+        // ur[j]=u[Pars::nx-2][j]; //? Velocity at Outlet <-- less safe
         ur[j] = 2.0*u[Pars::nx-2][j]-u[Pars::nx-3][j]; //Linear Extrapolation
       }else{
         ur[j]=0.0e0;
@@ -36,7 +50,7 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
     }
 
 	// Momentum Equation x
-	u_star = u;  // u^{n+1}
+	this->_u_star = u;  // u^{n+1}
 	for(size_t i=0;i<Pars::nx-1;i++){
 		for(size_t j=1;j<Pars::ny-1;j++){
 		
@@ -65,15 +79,15 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
 	
 		A = -Pars::rho*(A1+A2)+Pars::miu*(A3+A4);
 
-		u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
-		u_star[i][j] = (1.0/Pars::rho)*u_star[i][j];
+		_u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
+		_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];
 
 		}
 	}	
 
 	// Momentum Equation y
-	v_star = v;  // v^{n+1}
-	for(size_t i=1;i<Pars::nx-2;i++){
+	this->_v_star = v;  // v^{n+1}
+	for(size_t i=1;i<Pars::nx-1;i++){
 		for(size_t j=0;j<Pars::ny-1;j++){
 		 
 		 double ubar_1,ubar_2;
@@ -122,16 +136,16 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
 
 			B = -Pars::rho*(B1+B2)+Pars::miu*(B3+B4);
 
-			v_star[i][j] = Pars::rho*v[i][j]+B*dt-((dt/Pars::dy)*(p[i][j+1]-p[i][j]));
-			v_star[i][j] = (1.0/Pars::rho)*v_star[i][j];
+			_v_star[i][j] = Pars::rho*v[i][j]+B*dt-((dt/Pars::dy)*(p[i][j+1]-p[i][j]));
+			_v_star[i][j] = (1.0/Pars::rho)*_v_star[i][j];
 		}
 	}
-  // Left Boundary (Outlet)
-    //Linear Extrapolation
-    for(size_t j=0;j<Pars::ny-1;j++){
-      if(idx_out[j]==1){
-        v_star[Pars::nx-1][j] = 2.0*v_star[Pars::nx-2][j]-v_star[Pars::nx-3][j];
-      }
-    }
+  // Left Boundary (Outlet) <-- does it means right boundary? since it is indexed from (nx-1)
+  //Linear Extrapolation
+	  for(size_t j=0;j<Pars::ny-1;j++){
+	    if(idx_out[j]==1){
+	      _v_star[Pars::nx-1][j] = 2.0*_v_star[Pars::nx-2][j]-_v_star[Pars::nx-3][j];
+	    }
+	  }
 
  }
