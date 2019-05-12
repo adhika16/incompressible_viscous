@@ -4,10 +4,10 @@ imcompressible viscous flows solver using SIMPLE methods. The problem is flow in
 ___________________
 |                 | \
 o                 | \
-o                 |
-o                 x
-|                 x
-|_________________x
+o                 | \
+o                 x \
+|                 x \
+|_________________x \
 
 where o = inlet, x = outlet
 
