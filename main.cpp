@@ -43,12 +43,8 @@ int main(int argc, char const *argv[])
 	/*
 	your code here ...
 	*/
-
 	SIMPLE _SIMPLE;
-
-	std::vector<std::vector<double>> u_star,v_star;
-	_SIMPLE.MomentumEq(p,u,v,ul,ur,vt,vb,idx_in,idx_out,u_star,v_star);
-	
+	_SIMPLE.get_SIMPLE(p, u, v, ul, ur, vt, vb, idx_in, idx_out, x_IJ, y_IJ, x_ij_u, y_ij_u, x_ij_v, y_ij_v);
 
 	// == saving data ==
 	// std::ofstream outs;
