@@ -2,12 +2,15 @@
 imcompressible viscous flows solver using SIMPLE methods. The problem is flow inside a box with specified inlet and outlet.
 
 ___________________
+
 |                 |
+
 o                 |
+
 o                 |
 o                 x
 |                 x
-|_________________
+|_________________x
 
 where o = inlet, x = outlet
 
