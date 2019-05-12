@@ -32,6 +32,8 @@ SRCS			= main.cpp \
 						global.cpp \
 						src/initialization.cpp \
 						src/MomentumEq.cpp \
+						src/pressure_correction.cpp \
+						src/get_simple.cpp \
 
 OBJS			= $(SRCS:.cpp=.o)
 
