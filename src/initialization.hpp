@@ -5,7 +5,6 @@
 #include "../global.hpp"
 #endif
 
-// #include <locale> // std::toupper, std::tolower
 
 class Initialization
 {
@@ -19,9 +18,9 @@ class Initialization
 public:
 	Initialization();
 
-  void init_domain(std::vector<std::vector<double>> x_IJ, std::vector<std::vector<double>> y_IJ,
-   std::vector<std::vector<double>> x_ij_u, std::vector<std::vector<double>> y_ij_u,
-   std::vector<std::vector<double>> x_ij_v, std::vector<std::vector<double>> y_ij_v,
+  void init_domain(std::vector<std::vector<double>> &x_IJ, std::vector<std::vector<double>> &y_IJ,
+   std::vector<std::vector<double>> &x_ij_u, std::vector<std::vector<double>> &y_ij_u,
+   std::vector<std::vector<double>> &x_ij_v, std::vector<std::vector<double>> &y_ij_v,
    std::vector<int> &idx_in,std::vector<int> &idx_out,
    std::vector<std::vector<double>> &P,std::vector<std::vector<double>>&u, std::vector<std::vector<double>>&v);
 
