@@ -11,6 +11,8 @@ namespace Pars
 	extern const int ny = 50;
 	extern const double dx = lx/(double)nx;
 	extern const double dy = ly/(double)ny;
+	extern const double omega = 0.5; // relaxation factor
+	extern const double alpha_p = 0.1; // pressure correctoin relaxation factor
 
 	// Inlet and Outlet Properties
 	extern const double p_i = 0.0; //Inlet Pressure
@@ -23,5 +25,5 @@ namespace Pars
 	extern const double l_o = 0.25; //Outlet length
 
 	// Time Step
-	extern const double dt = 0.01;
+	extern const double dt = 0.0001;
 }
