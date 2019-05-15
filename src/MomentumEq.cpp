@@ -34,19 +34,19 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
       if(idx_in[j]==1){
         ul[j]=Pars::u_i;
       }else{
-        ul[j]=0.0e0;
+        ul[j]=u[0][j];
       }
       if(idx_out[j]==1){ 
         // ur[j]=u[Pars::nx-2][j]; //? Velocity at Outlet <-- less safe
         ur[j] = 2.0*u[Pars::nx-2][j]-u[Pars::nx-3][j]; //Linear Extrapolation
       }else{
-        ur[j]=0.0e0;
+        ur[j]=u[Pars::nx-2][j];
       } 
     }
     // Top and Bottom Boundary 
     for(size_t i;i<Pars::nx;i++){
-      vt[i] = 0.0e0;
-      vb[i] = 0.0e0;
+      vt[i] = v[i][Pars::nx-1];
+      vb[i] = v[i][0];
     }
 
 	// Momentum Equation x
