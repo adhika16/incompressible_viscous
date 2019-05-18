@@ -13,6 +13,22 @@ SIMPLE::SIMPLE()
 	// == initialization of internal variables for pressure correction purpose
 	// this->_p_n.resize(Pars::nx, std::vector<double>(Pars::ny, 0.0e0));
 	// this->_p_n_1.resize(Pars::nx, std::vector<double>(Pars::ny, 0.0e0));
+	// _p_n   = arma::randu(Pars::nx, Pars::ny);
+	// _p_n_1 = arma::randu(Pars::nx, Pars::ny);
+
+	_p_n   = arma::ones(Pars::nx, Pars::ny)*1.0e-2;
+	_p_n_1 = arma::ones(Pars::nx, Pars::ny)*1.0e-2;
+
+	_p_n.col(0)          = zeros<vec>(Pars::ny);
+	_p_n.col(Pars::nx-1) = zeros<vec>(Pars::ny);
+	_p_n.row(0)          = zeros<rowvec>(Pars::nx);
+	_p_n.row(Pars::ny-1) = zeros<rowvec>(Pars::nx);
+
+	_p_n_1.col(0)          = zeros<vec>(Pars::ny);
+	_p_n_1.col(Pars::nx-1) = zeros<vec>(Pars::ny);
+	_p_n_1.row(0)          = zeros<rowvec>(Pars::nx);
+	_p_n_1.row(Pars::ny-1) = zeros<rowvec>(Pars::nx);
+
 }
 
 // =====================================================
@@ -34,19 +50,19 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
       if(idx_in[j]==1){
         ul[j]=Pars::u_i;
       }else{
-        ul[j]=u[0][j];
+        ul[j] = -u[0][j];
       }
       if(idx_out[j]==1){ 
         // ur[j]=u[Pars::nx-2][j]; //? Velocity at Outlet <-- less safe
         ur[j] = 2.0*u[Pars::nx-2][j]-u[Pars::nx-3][j]; //Linear Extrapolation
       }else{
-        ur[j]=u[Pars::nx-2][j];
+        ur[j] = -u[Pars::nx-2][j];
       } 
     }
     // Top and Bottom Boundary 
     for(size_t i;i<Pars::nx;i++){
-      vt[i] = v[i][Pars::nx-1];
-      vb[i] = v[i][0];
+      vt[i] = -v[i][Pars::nx-1];
+      vb[i] = -v[i][0];
     }
 
 	// Momentum Equation x
@@ -79,8 +95,16 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
 	
 		A = -Pars::rho*(A1+A2)+Pars::miu*(A3+A4);
 
-		_u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
-		_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];
+		if (i==0 || i==Pars::nx-2)
+		{
+			_u_star[i][j] = Pars::rho*u[i][j] + A*dt /*-((dt/Pars::dx)*(p[i+1][j]-p[i][j]))*/;
+			_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];
+		}
+		else
+		{
+			_u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
+			_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];			
+		}
 
 		}
 	}	
@@ -136,8 +160,17 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
 
 			B = -Pars::rho*(B1+B2)+Pars::miu*(B3+B4);
 
-			_v_star[i][j] = Pars::rho*v[i][j]+B*dt-((dt/Pars::dy)*(p[i][j+1]-p[i][j]));
-			_v_star[i][j] = (1.0/Pars::rho)*_v_star[i][j];
+			if (j==0||j==Pars::ny-2)
+			{
+				_v_star[i][j] = Pars::rho*v[i][j] + B*dt /*- ((dt/Pars::dy)*(p[i][j+1]-p[i][j]))*/;
+				_v_star[i][j] = (1.0/Pars::rho)*_v_star[i][j];				
+			}
+			else
+			{
+				_v_star[i][j] = Pars::rho*v[i][j]+B*dt-((dt/Pars::dy)*(p[i][j+1]-p[i][j]));
+				_v_star[i][j] = (1.0/Pars::rho)*_v_star[i][j];
+			}
+
 		}
 	}
   // Left Boundary (Outlet) <-- does it means right boundary? since it is indexed from (nx-1)
