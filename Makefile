@@ -11,7 +11,7 @@ HDRS			= global.hpp \
 						src/initialization.hpp \
 						src/SIMPLE.hpp \
 
-LIBS			=
+LIBS			= -larmadillo
 
 INPS			=
 
