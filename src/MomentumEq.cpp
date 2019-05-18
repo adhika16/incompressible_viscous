@@ -70,41 +70,41 @@ void SIMPLE::MomentumEq(const std::vector<std::vector<double>> p,const std::vect
 	for(size_t i=0;i<Pars::nx-1;i++){
 		for(size_t j=1;j<Pars::ny-1;j++){
 		
-		double vbar_1,vbar_2;
-		vbar_1 = 0.5*(v[i][j]+v[i+1][j]);		// vbar_{i}{j+1/2}
-		vbar_2 = 0.5*(v[i][j-1]+v[i+1][j-1]);	// vbar_{i}{j-1/2}
+			double vbar_1,vbar_2;
+			vbar_1 = 0.5*(v[i][j]+v[i+1][j]);		// vbar_{i}{j+1/2}
+			vbar_2 = 0.5*(v[i][j-1]+v[i+1][j-1]);	// vbar_{i}{j-1/2}
+			
+			double A,A1,A2,A3,A4;
+			if(i==0){	// Points Near Left Boundary
+				A1 = (pow(u[i+1][j],2)-pow(ul[j],2))/(2*Pars::dx);
+				A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
+				A3 = (u[i+1][j]-2*u[i][j]+ul[j])/pow(Pars::dx,2);
+				A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);			
+			}
+			else if(i==Pars::nx-2){ // Points Near Right Boundary
+				A1 = (pow(ur[j],2)-pow(u[i-1][j],2))/(2*Pars::dx);
+				A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
+				A3 = (ur[j]-2*u[i][j]+u[i-1][j])/pow(Pars::dx,2);
+				A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);
+			}else{
+				A1 = (pow(u[i+1][j],2)-pow(u[i-1][j],2))/(2*Pars::dx);
+				A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
+				A3 = (u[i+1][j]-2*u[i][j]+u[i-1][j])/pow(Pars::dx,2);
+				A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);
+			}
 		
-		double A,A1,A2,A3,A4;
-		if(i==0){	// Points Near Left Boundary
-			A1 = (pow(u[i+1][j],2)-pow(ul[j],2))/(2*Pars::dx);
-			A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
-			A3 = (u[i+1][j]-2*u[i][j]+ul[j])/pow(Pars::dx,2);
-			A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);			
-		}
-		else if(i==Pars::nx-2){ // Points Near Right Boundary
-			A1 = (pow(ur[j],2)-pow(u[i-1][j],2))/(2*Pars::dx);
-			A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
-			A3 = (ur[j]-2*u[i][j]+u[i-1][j])/pow(Pars::dx,2);
-			A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);
-		}else{
-			A1 = (pow(u[i+1][j],2)-pow(u[i-1][j],2))/(2*Pars::dx);
-			A2 = (u[i][j+1]*vbar_1-u[i][j-1]*vbar_2)/(2*Pars::dy);
-			A3 = (u[i+1][j]-2*u[i][j]+u[i-1][j])/pow(Pars::dx,2);
-			A4 = (u[i][j+1]-2*u[i][j]+u[i][j-1])/pow(Pars::dy,2);
-		}
-	
-		A = -Pars::rho*(A1+A2)+Pars::miu*(A3+A4);
+			A = -Pars::rho*(A1+A2)+Pars::miu*(A3+A4);
 
-		if (i==0 || i==Pars::nx-2)
-		{
-			_u_star[i][j] = Pars::rho*u[i][j] + A*dt /*-((dt/Pars::dx)*(p[i+1][j]-p[i][j]))*/;
-			_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];
-		}
-		else
-		{
-			_u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
-			_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];			
-		}
+			if ( (i==0 && idx_in[j]!=1) || (i==Pars::nx-2 && idx_out[j]!=1) )
+			{
+				_u_star[i][j] = Pars::rho*u[i][j] + A*dt /*-((dt/Pars::dx)*(p[i+1][j]-p[i][j]))*/;
+				_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];
+			}
+			else
+			{
+				_u_star[i][j] = Pars::rho*u[i][j]+ A*dt-((dt/Pars::dx)*(p[i+1][j]-p[i][j]));
+				_u_star[i][j] = (1.0/Pars::rho)*_u_star[i][j];			
+			}
 
 		}
 	}	
