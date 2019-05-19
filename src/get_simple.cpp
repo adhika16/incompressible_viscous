@@ -28,13 +28,13 @@ void SIMPLE::get_SIMPLE(std::vector<std::vector<double>> &p, std::vector<std::ve
 				// p[i][j] += Pars::alpha_p*_p_n[i][j];
 				// err_p   += abs(Pars::alpha_p*_p_n[i][j]);
 				p[i][j] = p[i][j] + Pars::alpha_p*_p_n(i,j);
-				err_p   += abs(Pars::alpha_p*_p_n(i,j));
+				err_p   += abs(Pars::alpha_p*_dx*_dy*_p_n(i,j));
 			}
 		}
 		n_iter+=1;
 		// printf("\n%f\n", err_p);
 		// printf("\n");
-    // cout <<  "\rrelative error: " << err_p << ", no. iterations: " << n_iter/*<< "\r"*/;
+    // cout <<  "\rrelative error:" << err_p << ", no. iterations: " << n_iter/*<< "\r"*/;
 
 		u = this->_u_star;
 		v = this->_v_star;
@@ -66,8 +66,9 @@ void SIMPLE::get_SIMPLE(std::vector<std::vector<double>> &p, std::vector<std::ve
 			}
 		}
 
-		printf("\n%f %f %f \n", err_p, err_u, err_v);
-	} while ( err_p > 1.0e-1 /*|| err_u > 1.0e-4 || err_v > 1.0e-4*/ && n_iter < 200);
+		// printf("\n%f %f %f \n", err_p, err_u, err_v);
+		cout <<  "\radded mass: " << err_p << ", no. iterations: " << n_iter << ", error u: " << err_u << ", error v: " << err_v/*<< "\r"*/;
+	} while ( err_p > 1.0e-3 /*|| err_u > 1.0e-4 || err_v > 1.0e-4*/ && n_iter < 100);
 
 		u = _u_star;
 		v = _v_star;
