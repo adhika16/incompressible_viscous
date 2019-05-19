@@ -28,44 +28,47 @@ void SIMPLE::get_SIMPLE(std::vector<std::vector<double>> &p, std::vector<std::ve
 				// p[i][j] += Pars::alpha_p*_p_n[i][j];
 				// err_p   += abs(Pars::alpha_p*_p_n[i][j]);
 				p[i][j] = p[i][j] + Pars::alpha_p*_p_n(i,j);
-				err_p   += abs(Pars::alpha_p*_p_n(i,j));
+				err_p   += abs(Pars::alpha_p*_dx*_dy*_p_n(i,j));
 			}
 		}
 		n_iter+=1;
-		printf("\n%f\n", err_p);
+		// printf("\n%f\n", err_p);
 		// printf("\n");
-    // cout <<  "\rrelative error: " << err_p << ", no. iterations: " << n_iter/*<< "\r"*/;
+    // cout <<  "\rrelative error:" << err_p << ", no. iterations: " << n_iter/*<< "\r"*/;
 
 		u = this->_u_star;
 		v = this->_v_star;
 
-		// for (int i = 0; i < _nx-1; i++) // excluding boundary
-		// {
-		// 	for (int j = 0; j < _ny; j++) // excluding boundary
-		// 	{
-		// 		// u[i][j] += -_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]);
-		// 		// err_u   += abs(_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]));
-		// 		// u[i][j] = _u_star[i][j] - _dt/(_dx*Pars::rho)*(_p_n(i+1,j) - _p_n(i,j));
-		// 		u[i][j] = Pars::alpha_p*_u_star[i][j] + (1-Pars::alpha_p)*u[i][j];
-		// 		// err_u   += abs(_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]));
-		// 	}
-		// }
-		// // printf("\n%f\n", err_u);
+		for (int i = 0; i < _nx-2; i++) // excluding boundary
+		{
+			for (int j = 0; j < _ny; j++) // excluding boundary
+			{
+				// u[i][j] += -_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]);
+				// err_u   += abs(_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]));
+				// u[i][j] = _u_star[i][j] - _dt/(_dx*Pars::rho)*(_p_n(i+1,j) - _p_n(i,j));
+				// u[i][j] = Pars::alpha_p*_u_star[i][j] + (1-Pars::alpha_p)*u[i][j];
+				// err_u   += abs(_dt/_dx*(_p_n[i+1][j] - _p_n[i][j]));
+				err_u   += abs(Pars::rho*_dy*_dx*(u[i+1][j] - u[i][j]));
+			}
+		}
+		// printf("\n%f\n", err_u);
 
-		// for (int i = 0; i < _nx; i++) // excluding boundary
-		// {
-		// 	for (int j = 0; j < _ny-1; j++) // excluding boundary
-		// 	{
-		// 		// v[i][j] += -_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]);
-		// 		// err_v   += abs(_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]));
-		// 		// v[i][j] = _v_star[i][j] - _dt/(_dy*Pars::rho)*(_p_n(i,j+1) - _p_n(i,j));
-		// 		v[i][j] = Pars::alpha_p*_v_star[i][j] + (1-Pars::alpha_p)*v[i][j];
-		// 		// err_v   += abs(_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]));
-		// 	}
-		// }
+		for (int i = 0; i < _nx; i++) // excluding boundary
+		{
+			for (int j = 0; j < _ny-2; j++) // excluding boundary
+			{
+				// v[i][j] += -_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]);
+				// err_v   += abs(_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]));
+				// v[i][j] = _v_star[i][j] - _dt/(_dy*Pars::rho)*(_p_n(i,j+1) - _p_n(i,j));
+				// v[i][j] = Pars::alpha_p*_v_star[i][j] + (1-Pars::alpha_p)*v[i][j];
+				// err_v   += abs(_dt/_dy*(_p_n[i][j] - _p_n[i][j-1]));
+				err_v   += abs(Pars::rho*_dy*_dx*(v[i][j+1] - v[i][j]));
+			}
+		}
 
 		// printf("\n%f %f %f \n", err_p, err_u, err_v);
-	} while ( err_p > 1.0e-1 /*|| err_u > 1.0e-4 || err_v > 1.0e-4*/ && n_iter < 100);
+		cout <<  "\radded mass: " << err_p << ", no. iterations: " << n_iter << ", error u: " << err_u << ", error v: " << err_v/*<< "\r"*/;
+	} while ( err_p > 1.0e-3 /*|| err_u > 1.0e-4 || err_v > 1.0e-4*/ && n_iter < 100);
 
 		u = _u_star;
 		v = _v_star;
